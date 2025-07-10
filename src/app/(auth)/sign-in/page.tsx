@@ -47,8 +47,6 @@ function SignIn() {
     try {
       const res = await login(values).unwrap();
 
-      console.log("🚀 ~ onSubmit ~ res:", res);
-
       if (res.success) {
         const user = res.data;
 
@@ -68,7 +66,6 @@ function SignIn() {
         });
 
         router.push(loginRes?.callbackUrl || "/");
-        form.reset();
       }
     } catch (error: any) {
       toast({
