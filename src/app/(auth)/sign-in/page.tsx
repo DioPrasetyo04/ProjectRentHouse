@@ -17,6 +17,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/atomics/use-toast";
+import { useLoginMutation } from "@/services/auth.service";
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
@@ -36,15 +37,30 @@ function SignIn() {
     },
   });
 
-  function onSubmit(values: FormData) {
-    console.log("🚀 ~ onSubmit ~ values:", values);
-    form.reset();
-    toast({
-      title: "Welcome",
-      description: "Sign in successfully",
-      open: true,
-    });
-    router.push("/");
+  // mengambil data kosong lalu diinisialisasi mengambil variable use login mutation
+  // diinisialisasi login variable untuk menyimpan data dan inisialisasi variable isLoading untuk disabled
+  const [login, { isLoading }] = useLoginMutation();
+
+  async function onSubmit(values: FormData) {
+    try {
+      const res = await login(values).unwrap();
+
+      console.log("🚀 ~ onSubmit ~ res:", res);
+
+      form.reset();
+      toast({
+        title: "Welcome",
+        description: "Sign in successfully",
+        open: true,
+      });
+    } catch (error: any) {
+      toast({
+        title: "something went wrong",
+        description: error?.data?.message,
+        variant: "destructive",
+      });
+    }
+    // router.push("/");
   }
 
   return (
@@ -118,7 +134,9 @@ function SignIn() {
                 Remember me
               </label>
             </div>
-            <Button type="submit">Sign In</Button>
+            <Button type="submit" disabled={isLoading}>
+              Sign In
+            </Button>
             <Link href="/sign-up">
               <Button variant="third" type="button" className="mt-3">
                 Create New Account
