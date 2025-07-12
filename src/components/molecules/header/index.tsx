@@ -39,6 +39,7 @@ function Header() {
           </ul>
         </nav>
 
+        {/* !! untuk mengambil atau menampilkan data session autentikasi login auth atau register */}
         <div
           data-login={!!session?.user}
           className="data-[login=true]:hidden data-[login=false]:flex items-center space-x-3"
